@@ -17,13 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/posts', 'PostController@index');
-Route::get('/posts/create', 'PostController@create');
-Route::post('/posts', 'PostController@store')->name('posts.store');
-Route::get('/posts/{id}', 'PostController@show');
-Route::get('/posts/{id}/edit', 'PostController@edit');
-Route::put('/posts/{id}', 'PostController@update');
-Route::delete('/posts/{id}', 'PostController@destroy');
+Route::resource('/posts', 'PostController');
 
 Auth::routes();
 
