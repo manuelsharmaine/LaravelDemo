@@ -38,7 +38,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:100',
+            'description' => 'required'
+        ]);
+
       // dd($request);
         $post = new Post();
         $post->title = $request->title;
@@ -85,6 +89,11 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => 'required|max:100',
+            'description' => 'required'
+        ]);
+
      
         $post = Post::find($id);
         $post->title = $request->title;
