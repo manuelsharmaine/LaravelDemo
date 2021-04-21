@@ -60,12 +60,14 @@ class PostController extends Controller
             $filenameToStore = '';
         }
 
-      // dd($request);
         $post = new Post();
-        $post->title = $request->title;
-        $post->description = $request->description;
+        $post->fill($request->all());
         $post->img = $filenameToStore;
-        $post->save();
+
+
+        if ($post->save()){
+            return redirect('/posts')->with('status','Sucessfully save');
+        }
 
         return redirect('/posts');
 
@@ -77,12 +79,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Post $post)
     {
-        //
-        $post = Post::find($id);
         return view('posts.show', compact('post'));
-        // dd($post);
     }
 
     /**
@@ -91,10 +90,8 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
-        $post = Post::find($id);
         return view('posts.edit', compact('post'));
     }
 
@@ -113,10 +110,25 @@ class PostController extends Controller
             'description' => 'required'
         ]);
 
+        if($request->hasFile('img')){
+
+            $filenameWithExt = $request->file('img')->getClientOriginalName();
+
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            
+            $extension = $request->file('img')->getClientOriginalExtension();
+
+            $filenameToStore = $filename.'_'.time().'.'.$extension;
+
+            $path = $request->file('img')->storeAs('public/img', $filenameToStore);
+        } else{
+               
+            $filenameToStore = '';
+        }
      
         $post = Post::find($id);
-        $post->title = $request->title;
-        $post->description = $request->description;
+        $post->fill($request->all());
+        $post->img = $filenameToStore;
         $post->save();
 
         return redirect('/posts');
